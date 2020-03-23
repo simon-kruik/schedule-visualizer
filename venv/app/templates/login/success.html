@@ -1,0 +1,7 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <h2>Login success</h2>
+    <p>Congrats! You logged in successfully!</p>
+    <p>Access token: {{ session['access_token'] }}</p>
+{% endblock %}

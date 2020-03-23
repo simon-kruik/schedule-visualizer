@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="jumbo">
+
+        {% for key, value in profile_dict.items() %}
+            <ul>
+                <li><b>Key:</b> {{ key }}</li>
+                <li><b>Value:</b> {{ value }}</li>
+            </ul>
+        {% endfor %}
+
+    </div>
+{% endblock %}
