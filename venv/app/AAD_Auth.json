@@ -1,0 +1,8 @@
+{
+"AAD-Domain":"e8911c26-cf9f-4a9c-878e-527807be8791",
+"AAD-Domain-Name":"studentutsedu.onmicrosoft.com",
+"App-ID":"3dedecad-8586-4dab-a1b6-fd06e7d2fc05",
+"Secret":"bmabYUZ8214+iykVBAV9^*)",
+"Permissions":["calendars.read", "user.readbasic.all"],
+"Redirect-URI":"http://localhost:5000/login/authorized"
+}

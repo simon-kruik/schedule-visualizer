@@ -1,0 +1,6 @@
+*Auth.json
+*auth*.json
+bin/
+lib/
+Scripts/
+*.pyc
