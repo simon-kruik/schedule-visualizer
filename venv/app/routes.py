@@ -35,7 +35,17 @@ def my_utility_processor():
                     return main.get_auth_link(session['state'])
                 else:
                     return "FAILURE"
-        return dict(authlink=authlink())
+        # For troubleshooting only
+        def get_state():
+            if 'state' in session:
+                return session['state']
+            else:
+                return "No Current State"
+        return dict(authlink=authlink(), state=get_state())
+
+
+
+
 
 
 @app.route('/')
@@ -49,8 +59,13 @@ def home():
 def about():
         return render_template('about.html')
 
+@app.route('/login/authorized', methods=['GET','POST'])
+def testing_postpoint():
+        data_received = request.form
+        return render_template('/testing/post_endpoint.html', post_dict=data_received)
 
-@app.route('/login/authorized', methods=['POST'])
+
+@app.route('/login/authorized_test', methods=['POST'])
 def login_authorized():
         if 'state' in session:
             if auth.handle_auth_response(request, session['state']):
