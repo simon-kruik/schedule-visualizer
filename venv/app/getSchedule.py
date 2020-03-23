@@ -52,7 +52,8 @@ def isBusy(schedule, given_time):
     # print(str(end_time.time()))
     if end_time.time() <= given_time.time() <= start_time.time():
         return OUT
-    for item in items
+    for item in items:
+        return FREE
     # for item in items.items()
     #   if
     return FREE
