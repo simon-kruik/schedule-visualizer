@@ -1,0 +1,5 @@
+{
+Schedules: ["Pascal.tampubolon@uts.edu.au"],
+StartTime: {"dateTime":"2020-03-24T05:22:24", "timeZone":"Australia/Sydney"},
+EndTime: {"dateTime":"2020-03-29T05:29:28", "timeZone":"Australia/Sydney"}
+}

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, session, redirect, url_for, send_file
 from functools import wraps
 import auth, main, getProfile
 import uuid
@@ -140,9 +140,20 @@ def login_sign_out():
 @login_required
 def me():
     person_dict = getProfile.get_profile(session['access_token'])
+    photo = getProfile.get_photo(person_dict['mail'], session['access_token'])
     # print(session['expires_at'])
     # profile_dict = {"Key":"Value","Key2":"Value2"}
-    return render_template('/me.html', profile_dict=person_dict)
+    return render_template('/me.html', profile_dict=person_dict, photo=photo)
+
+@app.route('/me/photo')
+@login_required
+def me_photo():
+    person_dict = getProfile.get_profile(session['access_token'])
+    photo = getProfile.get_photo(person_dict['mail'], session['access_token'])
+    if (photo):
+        return send_file(photo, mimetype='image/jpeg', as_attachment=False)
+    else:
+        return render_template('404')
 
 
 @app.route('/schedule/choose')

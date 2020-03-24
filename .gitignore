@@ -4,3 +4,4 @@ bin/
 lib/
 Scripts/
 *.pyc
+app/__pycache__/

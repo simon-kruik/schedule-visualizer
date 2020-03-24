@@ -13,6 +13,7 @@ FREE = "Free"
 # Separation between Start_Date and End_Date needs to be 30 minutes or morel
 
 
+# Simply submits the request to Microsoft Graph API and returns the resulting JSON object
 def get_schedule(access_token, user, start_date, end_date, time_zone):
     url = "https://graph.microsoft.com/beta/me/calendar/getschedule"
     payload = {
@@ -35,30 +36,36 @@ def get_schedule(access_token, user, start_date, end_date, time_zone):
     results = requests.post(url=url, headers=headers, data=str(payload))
     return results
 
-
+# Checks if the given time is within working hours, and not during any events for the given schedule
 def isBusy(schedule, given_time):
+    # Dissecting the schedule object
     given_time = given_time.astimezone(datetime.timezone.utc)
     schedules = schedule["value"]
     details = schedules[0]
     items = details["scheduleItems"]
     workdays = details["workingHours"]
-    current_day_string = datetime.datetime.now().strftime("%A")
-    if current_day_string.lower() not in workdays["daysOfWeek"]:
+    # Comparing the given time to the working hours in the schedule
+    given_day_string = given_time.strftime("%A")
+    if given_day_string.lower() not in workdays["daysOfWeek"]:
+        print("Not a working day")
         return OUT
     start_time = parse_working_hours_time(workdays["startTime"], workdays["timeZone"]["name"]).astimezone(datetime.timezone.utc)
     end_time = parse_working_hours_time(workdays["endTime"], workdays["timeZone"]["name"]).astimezone(datetime.timezone.utc)
-    # print(str(start_time.time()))
-    # print(str(time.time()))
-    # print(str(end_time.time()))
+    print(str(start_time.time()))
+    print(str(given_time.time()))
+    print(str(end_time.time()))
+    # This isn't working as expected...
     if end_time.time() <= given_time.time() <= start_time.time():
         return OUT
+
+    # Comparing the
     for item in items:
         return FREE
     # for item in items.items()
     #   if
     return FREE
 
-
+# The returned working hours include a timezone, that we need to parse to UTC, it does this by loading a file,
 def parse_working_hours_time(time_string, time_zone):
     if time_zone == "Customized Time Zone":
         print("Oh no!")
