@@ -4,6 +4,7 @@ import auth, main, getProfile
 import uuid
 import datetime
 from flask_socketio import SocketIO, emit
+import copy
 
 
 app = Flask(__name__)
@@ -61,7 +62,16 @@ def about():
 
 @app.route('/login/authorized', methods=['GET','POST'])
 def testing_postpoint():
-        data_received = request.form
+        data_received = {}
+        print("State: ")
+        print(session['state'])
+        print('\n')
+        print("Received data: ")
+        print(request.form)
+        print('\n')
+        if 'state' in session:
+            success = auth.handle_auth_response(request,session['state'])
+            data_received['Success'] = success
         return render_template('/testing/post_endpoint.html', post_dict=data_received)
 
 
