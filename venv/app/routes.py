@@ -51,31 +51,36 @@ def my_utility_processor():
 
 @app.route('/')
 def home():
+        if 'access_token' in session:
+            return render_template('/schedule/visualization.html')
         if 'state' not in session:
+            #print("#########################New Session!#######################")
             session['state'] = str(uuid.uuid4())
         return render_template('home.html')
+
+@app.route('/testing/enter_data')
+def testing_enter_data():
+    data_dict = {}
+    return render_template('/testing/enter_data.html')
+
+@app.route('/testing/process_data', methods=['POST'])
+def testing_process_data():
+    session['test_data'] = request.form
+    return redirect(url_for('testing_view_data'))
+
+@app.route('/testing/view_data')
+def testing_view_data():
+    data_dict = {}
+    if 'test_data' in session:
+        data_dict = session['test_data']
+    return render_template('/testing/view_data.html',data_dict=data_dict)
 
 
 @app.route('/about')
 def about():
         return render_template('about.html')
 
-@app.route('/login/authorized', methods=['GET','POST'])
-def testing_postpoint():
-        data_received = {}
-        print("State: ")
-        print(session['state'])
-        print('\n')
-        print("Received data: ")
-        print(request.form)
-        print('\n')
-        if 'state' in session:
-            success = auth.handle_auth_response(request,session['state'])
-            data_received['Success'] = success
-        return render_template('/testing/post_endpoint.html', post_dict=data_received)
-
-
-@app.route('/login/authorized_test', methods=['POST'])
+@app.route('/login/authorized', methods=['POST'])
 def login_authorized():
         if 'state' in session:
             if auth.handle_auth_response(request, session['state']):
@@ -92,6 +97,21 @@ def login_authorized():
 
         # return render_template('logging_in.html')
 
+
+@app.route('/login/authorized_test', methods=['POST'])
+
+def testing_postpoint():
+        data_received = {}
+        print("State: ")
+        print(session['state'])
+        print('\n')
+        print("Received data: ")
+        print(request.form.to_dict())
+        print('\n')
+        if 'state' in session:
+            success = auth.handle_auth_response(request,session['state'])
+            data_received['Success'] = success
+        return render_template('/testing/post_endpoint.html', post_dict=data_received)
 
 @app.route('/login/refresh')
 def login_refresh():

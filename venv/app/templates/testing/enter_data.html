@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="jumbo">
+        <form action="/testing/process_data" method="post">
+            <label for="data">Freeform data:</label><br>
+            <input type="text" id="data" name="data"><br>
+            <input type="submit" value="submit"><br>
+        </form>
+
+    </div>
+{% endblock %}

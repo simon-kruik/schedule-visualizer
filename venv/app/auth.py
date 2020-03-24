@@ -15,7 +15,7 @@ def handle_auth_response(request, state):
     data = request.form.to_dict()
     # print("Data returned: " + str(data))
     # print("Current session state: " + session['state'])
-    if state in data:
+    if 'state' in data:
         if data['state'] == state:
             return True
     else:
