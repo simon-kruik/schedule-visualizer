@@ -24,8 +24,9 @@ def format_date(date):
     return date.strftime("%Y-%m-%dT%H:%M:%S")
 
 
+# For some reason there doesn't seem to be a way to get the current UTC time with a tzinfo of UTC, so I grab it, and then add it in myself
 def get_current_date():
-    return datetime.datetime.utcnow()
+    return datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=datetime.timezone.utc)
 
 
 def get_auth_link(state):
