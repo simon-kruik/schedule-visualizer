@@ -5,4 +5,12 @@
         <h2>Welcome to Schedule Visualizer</h2>
         <meta http-equiv="refresh" content="5"/>
     </div>
+
+    {% for key, value in schedule_dict.items() %}
+        <ul>
+            <li><b>Key:</b> {{ key }}</li>
+            <li><b>Value:</b> {{ value }}</li>
+        </ul>
+    {% endfor %}
+
 {% endblock %}

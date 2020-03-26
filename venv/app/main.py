@@ -17,8 +17,16 @@ import auth
 import getSchedule, getProfile
 
 
+
+treat_tentative_as_busy = True
 auth_context = AuthenticationContext("https://login.microsoftonline.com/studentutsedu.onmicrosoft.com")
 auth_details = auth.load_auth_details("AAD_Auth.json")
+
+OUT = "Out"
+BUSY = "Busy"
+TENTATIVE = "Tentative"
+FREE = "Free"
+
 
 def format_date(date):
     return date.strftime("%Y-%m-%dT%H:%M:%S")
@@ -84,15 +92,19 @@ def verify_profiles(profiles_string, access_token):
 def getSchedules(emails, access_token):
     start_date = format_date(get_current_date())
     end_date = format_date(get_current_date() + timedelta(days=5))
-    timezone = "Australia\\Sydney"
+    timezone = '''Australia/Sydney'''
     print(start_date)
     print(end_date)
     users = {}
     for email in emails:
         current_dict = {"email": email}
+
         schedule = getSchedule.get_schedule(access_token, email, start_date, end_date, timezone)
-        current_dict['busy'] = getSchedule.isBusy(schedule,get_current_date())
-        current_dict['next_free'] = getSchedule.nextFree(schedule)
+        current_dict['current_status'] = getSchedule.isBusy(schedule , get_current_date())
+        current_dict["next_free"] = "Now"
+        if (current_dict['current_status'] == BUSY or (treat_tentative_as_busy and current_dict['current_status'] == TENTATIVE)):
+            current_dict["next_free"] = "Later"
+            #current_dict['next_free'] = getSchedule.next_free(schedule, get_current_date())
         users[email] = current_dict
     return users
 
@@ -104,107 +116,8 @@ if __name__ == '__main__':
     "value": [
         {
             "scheduleId": "Pascal.tampubolon@uts.edu.au",
-            "availabilityView": "0000000000000100222200000000000000000000000000000000000222222222000220200000000000000000000000000000000002222200000222220000000000000000000000000000000222222222222222220000000000000000000000000000000000000000000000000000000000000000000000000",
+            "availabilityView": "0000000002222200000222220000000000000000000000000000000222222222222222220000000000000000000000000000000000000000000000000000000000000000000000000",
             "scheduleItems": [
-                {
-                    "status": "tentative",
-                    "start": {
-                        "dateTime": "2020-03-24T01:00:00.0000000",
-                        "timeZone": "UTC"
-                    },
-                    "end": {
-                        "dateTime": "2020-03-24T01:15:00.0000000",
-                        "timeZone": "UTC"
-                    }
-                },
-                {
-                    "status": "busy",
-                    "start": {
-                        "dateTime": "2020-03-24T02:30:00.0000000",
-                        "timeZone": "UTC"
-                    },
-                    "end": {
-                        "dateTime": "2020-03-24T04:00:00.0000000",
-                        "timeZone": "UTC"
-                    }
-                },
-                {
-                    "status": "busy",
-                    "start": {
-                        "dateTime": "2020-03-24T22:00:00.0000000",
-                        "timeZone": "UTC"
-                    },
-                    "end": {
-                        "dateTime": "2020-03-25T01:00:00.0000000",
-                        "timeZone": "UTC"
-                    }
-                },
-                {
-                    "status": "busy",
-                    "start": {
-                        "dateTime": "2020-03-24T23:00:00.0000000",
-                        "timeZone": "UTC"
-                    },
-                    "end": {
-                        "dateTime": "2020-03-24T23:30:00.0000000",
-                        "timeZone": "UTC"
-                    }
-                },
-                {
-                    "status": "tentative",
-                    "start": {
-                        "dateTime": "2020-03-25T01:00:00.0000000",
-                        "timeZone": "UTC"
-                    },
-                    "end": {
-                        "dateTime": "2020-03-25T01:15:00.0000000",
-                        "timeZone": "UTC"
-                    }
-                },
-                {
-                    "status": "busy",
-                    "start": {
-                        "dateTime": "2020-03-25T01:30:00.0000000",
-                        "timeZone": "UTC"
-                    },
-                    "end": {
-                        "dateTime": "2020-03-25T02:00:00.0000000",
-                        "timeZone": "UTC"
-                    }
-                },
-                {
-                    "status": "busy",
-                    "start": {
-                        "dateTime": "2020-03-25T04:00:00.0000000",
-                        "timeZone": "UTC"
-                    },
-                    "end": {
-                        "dateTime": "2020-03-25T04:30:00.0000000",
-                        "timeZone": "UTC"
-                    }
-                },
-                {
-                    "status": "tentative",
-                    "start": {
-                        "dateTime": "2020-03-25T04:00:00.0000000",
-                        "timeZone": "UTC"
-                    },
-                    "end": {
-                        "dateTime": "2020-03-25T04:45:00.0000000",
-                        "timeZone": "UTC"
-                    }
-                },
-                {
-                    "status": "busy",
-                    "start": {
-                        "dateTime": "2020-03-25T05:30:00.0000000",
-                        "timeZone": "UTC"
-                    },
-                    "end": {
-                        "dateTime": "2020-03-25T05:45:00.0000000",
-                        "timeZone": "UTC"
-                    }
-                },
                 {
                     "status": "busy",
                     "start": {
@@ -250,7 +163,7 @@ if __name__ == '__main__':
                     }
                 },
                 {
-                    "status": "tentative",
+                    "status": "busy",
                     "start": {
                         "dateTime": "2020-03-26T01:00:00.0000000",
                         "timeZone": "UTC"
@@ -294,13 +207,13 @@ if __name__ == '__main__':
                     }
                 },
                 {
-                    "status": "tentative",
+                    "status": "busy",
                     "start": {
-                        "dateTime": "2020-03-27T01:00:00.0000000",
+                        "dateTime": "2020-03-27T00:00:00.0000000",
                         "timeZone": "UTC"
                     },
                     "end": {
-                        "dateTime": "2020-03-27T01:15:00.0000000",
+                        "dateTime": "2020-03-27T00:30:00.0000000",
                         "timeZone": "UTC"
                     }
                 },
@@ -343,8 +256,8 @@ if __name__ == '__main__':
             }
         }
     ]
-    }
-    print(getSchedule.isBusy(schedule, get_current_date()))
+}
+    print(getSchedule.isBusy(schedule, get_current_date() + datetime.timedelta(hours=1)))
     #getSchedules({'fake'},'fake')
 
 

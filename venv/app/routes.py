@@ -169,7 +169,7 @@ def schedule_visualization():
         return render_template('/schedule/choose.html')
     else:
         data = main.getSchedules(session['schedules'], session['access_token'])
-    return render_template('/schedule/visualisation.html')
+    return render_template('/schedule/visualization.html', schedule_dict=data)
 
 
 @app.route('/schedule/submit_choice', methods=['GET', 'POST'])
