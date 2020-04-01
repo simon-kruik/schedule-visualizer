@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, session, redirect, url_for, send_file
 from functools import wraps
-import auth, main, getProfile
+import auth, main, getProfile, getMail
 import uuid
 import datetime
 from flask_socketio import SocketIO, emit
@@ -51,8 +51,8 @@ def my_utility_processor():
 
 @app.route('/')
 def home():
-        if 'access_token' in session:
-            return render_template('/schedule/visualization.html')
+        #if 'access_token' in session:
+            #return render_template('/schedule/visualization.html')
         if 'state' not in session:
             #print("#########################New Session!#######################")
             session['state'] = str(uuid.uuid4())
@@ -192,6 +192,12 @@ def schedule_submit_choice():
         # print(schedules_list)
         return redirect('/schedule/visualisation')
     return render_template('/schedule/choose.html')
+
+@app.route('/mail/choose',methods=['GET'])
+@login_required
+def mail_choose():
+    mail_folders = getMail.get_users_folders(session['access_token'])
+    return render_template('/mail/choose.html',folders_list=mail_folders)
 
 
 if __name__ == '__main__':

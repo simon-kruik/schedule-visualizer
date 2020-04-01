@@ -1,0 +1,15 @@
+M: Length of list 1
+
+N: Length of list 2
+
+TimePoints: 100 long array of paired ints
+
+
+
+My Pseudocode;
+# Check that the list is sorted
+
+# Work through and remove any sub-events, and combine overlapping ones into just one
+
+# Work through the list, for each item, compare the end time to the next one's end time, if gap then free
+

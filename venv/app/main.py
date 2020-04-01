@@ -93,8 +93,8 @@ def getSchedules(emails, access_token):
     start_date = format_date(get_current_date())
     end_date = format_date(get_current_date() + timedelta(days=5))
     timezone = '''Australia/Sydney'''
-    print(start_date)
-    print(end_date)
+    #print(start_date) # Testing
+    # print(end_date) # Testing
     users = {}
     for email in emails:
         current_dict = {"email": email}
@@ -111,131 +111,186 @@ def getSchedules(emails, access_token):
 
 
 if __name__ == '__main__':
-    schedule = {
+    schedule =  {
     "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#Collection(microsoft.graph.scheduleInformation)",
     "value": [
         {
             "scheduleId": "Pascal.tampubolon@uts.edu.au",
-            "availabilityView": "0000000002222200000222220000000000000000000000000000000222222222222222220000000000000000000000000000000000000000000000000000000000000000000000000",
+            "availabilityView": "000000000222002200000000000000000000000000000000000000000000022202222220000000000000000000000000000000000000000222222222000000000000000000000000000000022222222222222222000000000000000000000000000000000000000000000000000000000000000000000000000",
             "scheduleItems": [
                 {
                     "status": "busy",
                     "start": {
-                        "dateTime": "2020-03-25T23:00:00.0000000",
+                        "dateTime": "2020-03-30T23:00:00.0000000",
                         "timeZone": "UTC"
                     },
                     "end": {
-                        "dateTime": "2020-03-25T23:30:00.0000000",
+                        "dateTime": "2020-03-31T00:00:00.0000000",
+                        "timeZone": "UTC"
+                    }
+                },
+                {
+                    "status": "tentative",
+                    "start": {
+                        "dateTime": "2020-03-30T23:30:00.0000000",
+                        "timeZone": "UTC"
+                    },
+                    "end": {
+                        "dateTime": "2020-03-31T00:00:00.0000000",
                         "timeZone": "UTC"
                     }
                 },
                 {
                     "status": "busy",
                     "start": {
-                        "dateTime": "2020-03-25T23:30:00.0000000",
+                        "dateTime": "2020-03-31T01:30:00.0000000",
                         "timeZone": "UTC"
                     },
                     "end": {
-                        "dateTime": "2020-03-26T00:00:00.0000000",
+                        "dateTime": "2020-03-31T02:00:00.0000000",
                         "timeZone": "UTC"
                     }
                 },
                 {
                     "status": "busy",
                     "start": {
-                        "dateTime": "2020-03-26T00:00:00.0000000",
+                        "dateTime": "2020-04-01T01:00:00.0000000",
                         "timeZone": "UTC"
                     },
                     "end": {
-                        "dateTime": "2020-03-26T00:30:00.0000000",
+                        "dateTime": "2020-04-01T01:30:00.0000000",
                         "timeZone": "UTC"
                     }
                 },
                 {
                     "status": "busy",
                     "start": {
-                        "dateTime": "2020-03-26T00:30:00.0000000",
+                        "dateTime": "2020-04-01T01:30:00.0000000",
                         "timeZone": "UTC"
                     },
                     "end": {
-                        "dateTime": "2020-03-26T01:00:00.0000000",
+                        "dateTime": "2020-04-01T02:00:00.0000000",
                         "timeZone": "UTC"
                     }
                 },
                 {
                     "status": "busy",
                     "start": {
-                        "dateTime": "2020-03-26T01:00:00.0000000",
+                        "dateTime": "2020-04-01T03:00:00.0000000",
                         "timeZone": "UTC"
                     },
                     "end": {
-                        "dateTime": "2020-03-26T01:15:00.0000000",
+                        "dateTime": "2020-04-01T03:30:00.0000000",
                         "timeZone": "UTC"
                     }
                 },
                 {
                     "status": "busy",
                     "start": {
-                        "dateTime": "2020-03-26T04:00:00.0000000",
+                        "dateTime": "2020-04-01T04:00:00.0000000",
                         "timeZone": "UTC"
                     },
                     "end": {
-                        "dateTime": "2020-03-26T05:00:00.0000000",
+                        "dateTime": "2020-04-01T05:00:00.0000000",
+                        "timeZone": "UTC"
+                    }
+                },
+                {
+                    "status": "tentative",
+                    "start": {
+                        "dateTime": "2020-04-01T04:00:00.0000000",
+                        "timeZone": "UTC"
+                    },
+                    "end": {
+                        "dateTime": "2020-04-01T04:45:00.0000000",
                         "timeZone": "UTC"
                     }
                 },
                 {
                     "status": "busy",
                     "start": {
-                        "dateTime": "2020-03-26T05:00:00.0000000",
+                        "dateTime": "2020-04-01T05:30:00.0000000",
                         "timeZone": "UTC"
                     },
                     "end": {
-                        "dateTime": "2020-03-26T06:00:00.0000000",
+                        "dateTime": "2020-04-01T05:45:00.0000000",
                         "timeZone": "UTC"
                     }
                 },
                 {
                     "status": "busy",
                     "start": {
-                        "dateTime": "2020-03-26T22:00:00.0000000",
+                        "dateTime": "2020-04-02T02:00:00.0000000",
                         "timeZone": "UTC"
                     },
                     "end": {
-                        "dateTime": "2020-03-27T06:00:00.0000000",
+                        "dateTime": "2020-04-02T03:00:00.0000000",
                         "timeZone": "UTC"
                     }
                 },
                 {
                     "status": "busy",
                     "start": {
-                        "dateTime": "2020-03-27T00:00:00.0000000",
+                        "dateTime": "2020-04-02T03:00:00.0000000",
                         "timeZone": "UTC"
                     },
                     "end": {
-                        "dateTime": "2020-03-27T00:30:00.0000000",
+                        "dateTime": "2020-04-02T04:00:00.0000000",
                         "timeZone": "UTC"
                     }
                 },
                 {
                     "status": "busy",
                     "start": {
-                        "dateTime": "2020-03-27T01:00:00.0000000",
+                        "dateTime": "2020-04-02T04:00:00.0000000",
                         "timeZone": "UTC"
                     },
                     "end": {
-                        "dateTime": "2020-03-27T02:30:00.0000000",
+                        "dateTime": "2020-04-02T05:00:00.0000000",
                         "timeZone": "UTC"
                     }
                 },
                 {
                     "status": "busy",
                     "start": {
-                        "dateTime": "2020-03-27T01:30:00.0000000",
+                        "dateTime": "2020-04-02T05:00:00.0000000",
                         "timeZone": "UTC"
                     },
                     "end": {
-                        "dateTime": "2020-03-27T02:00:00.0000000",
+                        "dateTime": "2020-04-02T06:00:00.0000000",
+                        "timeZone": "UTC"
+                    }
+                },
+                {
+                    "status": "busy",
+                    "start": {
+                        "dateTime": "2020-04-02T22:00:00.0000000",
+                        "timeZone": "UTC"
+                    },
+                    "end": {
+                        "dateTime": "2020-04-03T06:00:00.0000000",
+                        "timeZone": "UTC"
+                    }
+                },
+                {
+                    "status": "busy",
+                    "start": {
+                        "dateTime": "2020-04-03T01:30:00.0000000",
+                        "timeZone": "UTC"
+                    },
+                    "end": {
+                        "dateTime": "2020-04-03T02:00:00.0000000",
+                        "timeZone": "UTC"
+                    }
+                },
+                {
+                    "status": "busy",
+                    "start": {
+                        "dateTime": "2020-04-03T03:00:00.0000000",
+                        "timeZone": "UTC"
+                    },
+                    "end": {
+                        "dateTime": "2020-04-03T04:00:00.0000000",
                         "timeZone": "UTC"
                     }
                 }
@@ -256,8 +311,9 @@ if __name__ == '__main__':
             }
         }
     ]
-}
+    }
     print(getSchedule.isBusy(schedule, get_current_date() + datetime.timedelta(hours=1)))
+    print(getSchedule.next_free(schedule,get_current_date()))
     #getSchedules({'fake'},'fake')
 
 

@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <h2>Choose schedules</h2>
+    <p>Please choose which folder you'd like to view statistics for:</p>
+    <form action="/mail/submit_choice" method="post">
+        <select id="mail_folders">
+            {% for folder_dict in folders_list %}
+                <option value="{{ folder_dict['id'] }}">{{ folder_dict['displayName'] }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <br>
+        <input type="submit" value="Submit">
+    </form>
+{% endblock %}

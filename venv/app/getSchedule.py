@@ -61,6 +61,25 @@ def parse_schedule_event_hours(time_string, timezone_string):
     converted_datetime = converted_datetime.replace(tzinfo=datetime.timezone.utc)
     return converted_datetime
 
+def is_in_working_hours(schedule, given_time):
+    print("Given_time originally",given_time)
+    given_time_UTC = given_time.astimezone(datetime.timezone.utc)
+    print("Given_time in UTC", given_time_UTC)
+    schedules = schedule["value"]
+    details = schedules[0]
+    workdays = details["workingHours"]
+
+    # Comparing the given time to the working hours in the schedule
+    given_day_string = given_time.strftime("%A")
+    if given_day_string.lower() not in workdays["daysOfWeek"]:
+        return False
+    start_time = parse_working_hours_time(workdays["startTime"], workdays["timeZone"]["name"]).astimezone(datetime.timezone.utc)
+    end_time = parse_working_hours_time(workdays["endTime"], workdays["timeZone"]["name"]).astimezone(datetime.timezone.utc)
+    # Inverted comparison to check
+    if end_time.time() <= given_time_UTC.time() <= start_time.time():
+        return False
+    return True
+
 
 # Checks if the given time is within working hours, and not during any events for the given schedule
 def isBusy(schedule, given_time):
@@ -71,19 +90,11 @@ def isBusy(schedule, given_time):
     schedules = schedule["value"]
     details = schedules[0]
     items = details["scheduleItems"]
-    workdays = details["workingHours"]
-    # Comparing the given time to the working hours in the schedule
-    given_day_string = given_time.strftime("%A")
-    if given_day_string.lower() not in workdays["daysOfWeek"]:
-        print("Not a working day")
-        return OUT
-    start_time = parse_working_hours_time(workdays["startTime"], workdays["timeZone"]["name"]).astimezone(datetime.timezone.utc)
-    end_time = parse_working_hours_time(workdays["endTime"], workdays["timeZone"]["name"]).astimezone(datetime.timezone.utc)
     #print(str(start_time.time()))
     #print(str(given_time.time()))
     #print(str(end_time.time()))
-    # Inverted comparison to check
-    if end_time.time() <= given_time_UTC.time() <= start_time.time():
+
+    if not (is_in_working_hours(schedule,given_time)):
         return OUT
 
     # Comparing the list of meetings to current time
@@ -101,10 +112,55 @@ def next_free(schedule, given_time):
     # Dissecting the schedule object
 
     # Want to deal with everything in UTC, so convert given time - need to test on actual values
-    given_time_UTC = given_time.astimezone(datetime.timezone.utc)
+    given_time_UTC = given_time.astimezone(datetime.timezone.utc) # Need to figure out how to have this asright timezone
     schedules = schedule["value"]
     details = schedules[0]
     items = details["scheduleItems"]
+    free_during = False
+    # Create timeline object till the end of the current (or next) working day, and report how long until enext freee time
+    if is_sorted(items):
+        index = 0
+        boundary = len(items) - 1
+        while (index < boundary):
+            print("First event end time", dateutil.parser.isoparse(items[index]['end']['dateTime']))
+            print("Second event start time",dateutil.parser.isoparse(items[index + 1]['start']['dateTime']))
+            print("Is start after end?",(dateutil.parser.isoparse(items[index]['end']['dateTime']) < dateutil.parser.isoparse(items[index + 1]['start']['dateTime'])))
+            if (dateutil.parser.isoparse(items[index]['end']['dateTime']) < dateutil.parser.isoparse(items[index + 1]['start']['dateTime'])):
+                next_free = dateutil.parser.isoparse(items[index]['end']['dateTime'])
+                print("Is that end in working hours?", (is_in_working_hours(schedule,next_free)))
+                if(is_in_working_hours(schedule,next_free)):
+                    free_until = dateutil.parser.isoparse(items[index+1]['start']['dateTime'])
+                    if (is_in_working_hours(schedule,free_until)):
+                        free_for = free_until - next_free
+                        return {"next_free":next_free, "for_minutes":free_for.seconds/60}
+
+            index += 1
+
+    return {"next_free":"Never","for_minutes":0}
+
+def is_sorted(scheduleItems):
+    index = 0
+    length = len(scheduleItems)
+    while (index <= length - 2):
+        # Compare the start times of the current item and the next, and see if they're in the right order
+        if (dateutil.parser.isoparse(scheduleItems[index]['start']['dateTime']) > dateutil.parser.isoparse(scheduleItems[index+1]['start']['dateTime'])):
+            return False
+        index += 1
+    return True
+
+
+# def clean_schedule_items(scheduleItems):
+#     clean_items = []
+#     index = 0
+#     boundary = len(sheduleItems) - 1
+#     while (index <= boundary):
+#         if index == boundary:
+#             #Special cause
+#             print("Do Something special here")
+#         else:
+#             if (dateutil.parser.isoparse(scheduleItems[index]['end']['dateTime']) > dateutil.parser.isoparse(scheduleItems[index + 1]['end']['dateTime'])):
+#
+
 
 
 
