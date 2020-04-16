@@ -197,7 +197,30 @@ def schedule_submit_choice():
 @login_required
 def mail_choose():
     mail_folders = getMail.get_users_folders(session['access_token'])
+    print(mail_folders)
     return render_template('/mail/choose.html',folders_list=mail_folders)
+
+@app.route('/mail/submit_choice',methods=['POST'])
+@login_required
+def mail_submit_choice():
+    choice_dict = request.form.to_dict()
+    print(choice_dict)
+    mail_stats = getMail.search_folders(session['access_token'],choice_dict)
+    #session['mail_stats'] = mail_stats
+    # TESTING
+    return render_template('/testing/post_endpoint.html',post_dict=mail_stats)
+    #return redirect('/mail/stats', code=307)
+
+@app.route('/mail/stats',methods=['GET','POST'])
+@login_required
+def mail_stats():
+    if 'mail_stats' in session:
+        return render_template('/testing/post_endpoint.html', post_dict=session['mail_stats'])
+    elif request.form:
+        mail_stats = request.form.to_dict()
+        return render_template('/testing/post_endpoint.html',post_dict=mail_stats)
+    else:
+        return redirect('/mail/choose')
 
 
 if __name__ == '__main__':

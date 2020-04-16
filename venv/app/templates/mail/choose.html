@@ -4,10 +4,35 @@
     <h2>Choose schedules</h2>
     <p>Please choose which folder you'd like to view statistics for:</p>
     <form action="/mail/submit_choice" method="post">
-        <select id="mail_folders">
+        <select id="mail_folders" name="folder_id">
             {% for folder_dict in folders_list %}
                 <option value="{{ folder_dict['id'] }}">{{ folder_dict['displayName'] }}</option>
             {% endfor %}
+        </select>
+        <br>
+        <br>
+        <label for="start_date">Start Date: </label>
+        <input type="date" id="start_date" name="Start Date">
+        <br>
+        <label for="end_date">End Date: </label>
+        <input type="date" id="end_date" name="End Date">
+        <br>
+        <br>
+        <label for="sent_emails">Sent emails</label>
+        <input type="radio" id="sent_emails" name="stats" value="sent">
+        <br>
+        <br>
+        <label for="received_emails">Received emails</label>
+        <input type="radio" id="received_emails" name="stats" value="received">
+        <br>
+        <br>
+        <label for="sent_received_emails">Sent and Received emails</label>
+        <input type="radio" id="sent_received_emails" name="stats" value="sent_received">
+        <br>
+        <br>
+        <label for="stat_type">Choose which stats you'd like to see</label>
+        <select id="stat_type" name="stat_type">
+            <option value="faculty">Faculty</option>
         </select>
         <br>
         <br>
