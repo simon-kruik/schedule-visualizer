@@ -205,7 +205,7 @@ def mail_choose():
 def mail_submit_choice():
     choice_dict = request.form.to_dict()
     print(choice_dict)
-    mail_stats = getMail.search_folders(session['access_token'],choice_dict)
+    mail_stats = getMail.handle_choices(session['access_token'],choice_dict)
     #session['mail_stats'] = mail_stats
     # TESTING
     return render_template('/testing/post_endpoint.html',post_dict=mail_stats)
