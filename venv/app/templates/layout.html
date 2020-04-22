@@ -15,6 +15,8 @@
                             <li><a href="{{ url_for('about') }}">About</a></li>
                             {% if session['access_token'] %}
                             <li><a href="{{ url_for('me') }}">Me</a></li>
+                            <li><a href="{{ url_for('mail_choose') }}">Mail</a></li>
+                            <li><a href="{{ url_for('schedule_choose') }}">Schedule</a></li>
                             <li><a href="{{ url_for('login_sign_out') }}">Sign Out</a></li>
                             {% else %}
                             <li><a href="{{ authlink }}">Sign In</a></li>

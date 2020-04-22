@@ -1,10 +1,21 @@
 {% extends "layout.html" %}
 
 {% block content %}
-    <h2>Choose schedules</h2>
+    <h2>Choose Mail Stats</h2>
     <p>Please choose which folder you'd like to view statistics for:</p>
     <form action="/mail/submit_choice" method="post">
-        <select id="mail_folders" name="folder_id">
+        <label for="mail_folders_sent">Analyse Senders from folder:</label>
+        <select id="mail_folders_sent" name="sent_folder_id">
+            <option value="None">None</option>
+            {% for folder_dict in folders_list %}
+                <option value="{{ folder_dict['id'] }}">{{ folder_dict['displayName'] }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <br>
+        <label for="mail_folders_received">Analyse Recipents from folder:</label>
+        <select id="mail_folders_received" name="received_folder_id">
+                <option value="None">None</option>
             {% for folder_dict in folders_list %}
                 <option value="{{ folder_dict['id'] }}">{{ folder_dict['displayName'] }}</option>
             {% endfor %}
@@ -18,22 +29,16 @@
         <input type="date" id="end_date" name="End Date">
         <br>
         <br>
-        <label for="sent_emails">Sent emails</label>
-        <input type="radio" id="sent_emails" name="stats" value="sent">
-        <br>
-        <br>
-        <label for="received_emails">Received emails</label>
-        <input type="radio" id="received_emails" name="stats" value="received">
-        <br>
-        <br>
-        <label for="sent_received_emails">Sent and Received emails</label>
-        <input type="radio" id="sent_received_emails" name="stats" value="sent_received">
         <br>
         <br>
         <label for="stat_type">Choose which stats you'd like to see</label>
         <select id="stat_type" name="stat_type">
             <option value="faculty">Faculty</option>
         </select>
+        <br>
+        <br>
+        <label for="exclude_own_faculty">Exclude own faculty from stats?</label>
+        <input type="checkbox" id="exclude_own_faculty" name="exclude_own_faculty">
         <br>
         <br>
         <input type="submit" value="Submit">

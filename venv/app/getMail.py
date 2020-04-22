@@ -32,8 +32,7 @@ def get_users_folders(access_token, user="me"):
 def search_senders(access_token, choice_dictionary, user="me"):
     start_date = choice_dictionary['Start Date']
     end_date = choice_dictionary['End Date']
-    folder_id = choice_dictionary['folder_id']
-    direction = choice_dictionary['stats']
+    folder_id = choice_dictionary['sent_folder_id']
     stat_type = choice_dictionary['stat_type']
     url = "https://graph.microsoft.com/v1.0/" + user + '/mailfolders/"' + folder_id + '"/messages?$select=sender&$filter=receivedDateTime ge ' + start_date + " and receivedDateTime lt " + end_date
     senders = paginate(access_token, url)
@@ -43,8 +42,7 @@ def search_senders(access_token, choice_dictionary, user="me"):
 def search_recipients(access_token, choice_dictionary, user="me"):
     start_date = choice_dictionary['Start Date']
     end_date = choice_dictionary['End Date']
-    folder_id = choice_dictionary['folder_id']
-    direction = choice_dictionary['stats']
+    folder_id = choice_dictionary['received_folder_id']
     stat_type = choice_dictionary['stat_type']
     url = "https://graph.microsoft.com/v1.0/" + user + '/mailfolders/"' + folder_id + '"/messages?$select=toRecipients&$filter=receivedDateTime ge ' + start_date + " and receivedDateTime lt " + end_date
     recipients = paginate(access_token, url)
@@ -71,12 +69,15 @@ def paginate(access_token, url):
 # This function handles the choices from the form, and calls and collates results from the relevant functions then returns a dict pf the stats
 def handle_choices(access_token,choice_dict, user="me"):
     addresses = []
-    if "sent" in choice_dict["stats"]:
+    if choice_dict["received_folder_id"] != "None":
         addresses = addresses + search_recipients(access_token, choice_dict)
-    if "received" in choice_dict["stats"]:
+    if choice_dict["sent_folder_id"] != "None":
         addresses = addresses + search_senders(access_token, choice_dict)
     if choice_dict["stat_type"] == "faculty":
         stats = analyse_faculty(access_token,addresses)
+    if "exclude_own_faculty" in choice_dict:
+        own_faculty = lookup_own_level_one(access_token)
+        stats.pop(own_faculty,None)
     return stats
 
 def analyse_faculty(access_token, items):
@@ -137,6 +138,19 @@ def analyse_faculty(access_token, items):
 #                 else:
 #                     faculties[faculty] = 1
 #     return faculties
+
+def lookup_own_level_one(access_token):
+    url = "https://graph.microsoft.com/v1.0/me " + "?$select=displayName,jobTitle,onPremisesExtensionAttributes"
+    headers = {
+        "Authorization": "Bearer " + access_token,
+        "Host": "graph.microsoft.com"
+    }
+    results = requests.get(url=url, headers=headers)
+    results = json.loads(results.text)
+    if 'error' in results:
+        return 'Other'
+    else:
+        return results['onPremisesExtensionAttributes']['extensionAttribute1']
 
 def lookup_level_one_staff(access_token, email_address):
     url = "https://graph.microsoft.com/v1.0/users/" + email_address + "?$select=displayName,jobTitle,onPremisesExtensionAttributes"
