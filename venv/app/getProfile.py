@@ -40,11 +40,11 @@ def get_photo(email, access_token):
     if (id):
         url = "https://graph.microsoft.com/v1.0/users/" + id + "/photo/$value"
         headers = {
-            "Authorization": "Bearer" + access_token,
+            "Authorization": "Bearer " + access_token,
             "Host" : "graph.microsoft.com"
         }
         results = requests.get(url=url, headers=headers)
-        photo = results.raw
+        photo = results.content
         print(photo)
     else:
         photo = False

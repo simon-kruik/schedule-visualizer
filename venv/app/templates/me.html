@@ -1,9 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
     <div class="jumbo">
-        <img src="/me/photo">
-        <ul> <li> No Photo Available </li> </ul>
-
+        <img src="data:;base64,{{image}}">
         {% for key, value in profile_dict.items() %}
             <ul>
                 <li><b>Key:</b> {{ key }}</li>

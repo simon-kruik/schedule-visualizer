@@ -5,7 +5,7 @@ import uuid
 import datetime
 from flask_socketio import SocketIO, emit
 import copy
-
+from base64 import b64encode # For loading image binary objects
 
 app = Flask(__name__)
 app.secret_key = 'XgHwOW8G73&2wAGN'
@@ -141,15 +141,17 @@ def login_sign_out():
 def me():
     person_dict = getProfile.get_profile(session['access_token'])
     photo = getProfile.get_photo(person_dict['mail'], session['access_token'])
+    photo_b64 = b64encode(photo).decode("utf-8")
     # print(session['expires_at'])
     # profile_dict = {"Key":"Value","Key2":"Value2"}
-    return render_template('/me.html', profile_dict=person_dict, photo=photo)
+    return render_template('/me.html', profile_dict=person_dict, image=photo_b64)
 
 @app.route('/me/photo')
 @login_required
 def me_photo():
     person_dict = getProfile.get_profile(session['access_token'])
     photo = getProfile.get_photo(person_dict['mail'], session['access_token'])
+    photo_b64 = b64encode(photo).decode("utf-8")
     if (photo):
         return send_file(photo, mimetype='image/jpeg', as_attachment=False)
     else:
