@@ -146,17 +146,6 @@ def me():
     # profile_dict = {"Key":"Value","Key2":"Value2"}
     return render_template('/me.html', profile_dict=person_dict, image=photo_b64)
 
-@app.route('/me/photo')
-@login_required
-def me_photo():
-    person_dict = getProfile.get_profile(session['access_token'])
-    photo = getProfile.get_photo(person_dict['mail'], session['access_token'])
-    photo_b64 = b64encode(photo).decode("utf-8")
-    if (photo):
-        return send_file(photo, mimetype='image/jpeg', as_attachment=False)
-    else:
-        return render_template('404')
-
 
 @app.route('/schedule/choose')
 @login_required

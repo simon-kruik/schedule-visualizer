@@ -45,7 +45,6 @@ def get_photo(email, access_token):
         }
         results = requests.get(url=url, headers=headers)
         photo = results.content
-        print(photo)
     else:
         photo = False
     return photo
