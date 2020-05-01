@@ -150,7 +150,10 @@ def me():
 @app.route('/schedule/choose')
 @login_required
 def schedule_choose():
-    return render_template('/schedule/choose.html')
+    coworkers = getProfile.get_coworker_emails(session['access_token'])
+    coworker_string = ', '.join(coworkers)
+    print(coworker_string)
+    return render_template('/schedule/choose.html', default_emails=coworker_string)
 
 
 @app.route('/schedule/visualisation')
@@ -160,7 +163,11 @@ def schedule_visualization():
         return render_template('/schedule/choose.html')
     else:
         data = main.getSchedules(session['schedules'], session['access_token'])
-    return render_template('/schedule/visualization.html', schedule_dict=data)
+        photos = {}
+        for user_email in data:
+            photos[user_email] = b64encode(getProfile.get_photo(user_email, session['access_token'])).decode("utf-8")
+
+    return render_template('/schedule/visualization.html', schedule_dict=data, photos=photos)
 
 
 @app.route('/schedule/submit_choice', methods=['GET', 'POST'])

@@ -2,12 +2,13 @@
 {% extends "layout.html" %}
 {% block content %}
     <div class="jumbo">
-        <h2>Welcome to Schedule Visualizer</h2>
+        <h2>Schedule Visualizer</h2>
         <meta http-equiv="refresh" content="5"/>
     </div>
 
     {% for key, value in schedule_dict.items() %}
         <ul>
+            <img src="data:;base64,{{photos[key]}}">
             <li><b>Key:</b> {{ key }}</li>
             <li><b>Value:</b> {{ value }}</li>
         </ul>

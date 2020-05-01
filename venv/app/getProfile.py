@@ -49,6 +49,24 @@ def get_photo(email, access_token):
         photo = False
     return photo
 
+def get_coworker_emails(access_token):
+    manager_url = "https://graph.microsoft.com/v1.0/me/manager"
+    headers = {
+        "Authorization": "Bearer " + access_token,
+        "Host" : "graph.microsoft.com"
+    }
+    manager_results = requests.get(url=manager_url, headers=headers)
+    manager = json.loads(manager_results.text)
+    manager_id = manager['id']
+
+    coworkers_url = "https://graph.microsoft.com/v1.0/users/" + manager_id + "/directreports"
+    coworkers_results = requests.get(url=coworkers_url, headers=headers)
+    coworkers = json.loads(coworkers_results.text)
+    coworker_emails = [manager['mail']]
+    for coworker in coworkers['value']:
+        coworker_emails.append(coworker['mail'])
+    return coworker_emails
+
 def test_get_photo():
     with open('static/img/test.jfif') as f:
         print(f)

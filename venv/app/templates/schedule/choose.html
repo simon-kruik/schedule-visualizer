@@ -4,7 +4,7 @@
     <h2>Choose schedules</h2>
     <p>Please enter a comma separated list of accounts you'd like to view schedules for:</p>
     <form action="/schedule/submit_choice" method="post">
-        <input type="text" name="schedules" placeholder="user1@domain.com, user2@domain.com">
+        <input type="text" name="schedules" placeholder="user1@domain.com, user2@domain.com" value="{{ default_emails }}">
         <br>
         <br>
         <input type="submit" value="Submit">
