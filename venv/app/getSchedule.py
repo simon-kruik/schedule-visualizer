@@ -138,7 +138,7 @@ def next_free(schedule, given_time):
     next_free = given_time
     index = 0
     for item in items:
-        if (item['status'] == BUSY) or (treat_tentative_as_busy and item['status'] == TENTATIVE):
+        if (item['status'] == 'busy') or (treat_tentative_as_busy and item['status'] == 'tentative'):
             print("End time: ", parse_end_time(item))
             if parse_start_time(item) <= next_free <= parse_end_time(item):
                 print("Time in between start and end, updated next_free to be:", parse_end_time(item))
