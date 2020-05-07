@@ -107,36 +107,73 @@ def isBusy(schedule, given_time):
 
     return FREE
 
-# Function to find when a person will next be available
-def next_free(schedule, given_time):
-    # Dissecting the schedule object
 
-    # Want to deal with everything in UTC, so convert given time - need to test on actual values
-    given_time_UTC = given_time.astimezone(datetime.timezone.utc) # Need to figure out how to have this asright timezone
+
+def get_items_sorted_by_end_times(schedule):
     schedules = schedule["value"]
     details = schedules[0]
     items = details["scheduleItems"]
-    free_during = False
-    # Create timeline object till the end of the current (or next) working day, and report how long until enext freee time
-    if is_sorted(items):
-        index = 0
-        boundary = len(items) - 1
-        while (index < boundary):
-            print("First event end time", dateutil.parser.isoparse(items[index]['end']['dateTime']))
-            print("Second event start time",dateutil.parser.isoparse(items[index + 1]['start']['dateTime']))
-            print("Is start after end?",(dateutil.parser.isoparse(items[index]['end']['dateTime']) < dateutil.parser.isoparse(items[index + 1]['start']['dateTime'])))
-            if (dateutil.parser.isoparse(items[index]['end']['dateTime']) < dateutil.parser.isoparse(items[index + 1]['start']['dateTime'])):
-                next_free = dateutil.parser.isoparse(items[index]['end']['dateTime'])
-                print("Is that end in working hours?", (is_in_working_hours(schedule,next_free)))
-                if(is_in_working_hours(schedule,next_free)):
-                    free_until = dateutil.parser.isoparse(items[index+1]['start']['dateTime'])
-                    if (is_in_working_hours(schedule,free_until)):
-                        free_for = free_until - next_free
-                        return {"next_free":next_free, "for_minutes":free_for.seconds/60}
+    sorted_items = sorted(items, key = lambda item: dateutil.parser.isoparse(item["end"]["dateTime"]))
+    return sorted_items
 
-            index += 1
+def get_items_sorted_by_start_times(schedule):
+    schedules = schedule["value"]
+    details = schedules[0]
+    items = details["scheduleItems"]
+    sorted_items = sorted(items, key = lambda item: dateutil.parser.isoparse(item["start"]["dateTime"]))
+    return sorted_items
 
-    return {"next_free":"Never","for_minutes":0}
+def parse_start_time(item):
+    if item['start']['timeZone'] == "UTC":
+        return dateutil.parser.isoparse(item["start"]["dateTime"]).replace(tzinfo=datetime.timezone.utc)
+
+def parse_end_time(item):
+    if item['end']['timeZone'] == "UTC":
+        return dateutil.parser.isoparse(item["end"]["dateTime"]).replace(tzinfo=datetime.timezone.utc)
+
+# Function to find when a person will next be available
+def next_free(schedule, given_time):
+    # New approach based on sorting by end time_string
+    items = get_items_sorted_by_end_times(schedule)
+    next_free = given_time
+    index = 0
+    for item in items:
+        print("End time: ", parse_end_time(item))
+        if parse_start_time(item) <= next_free <= parse_end_time(item):
+            print("Time in between start and end, updated next_free to be:", parse_end_time(item))
+            next_free = parse_end_time(item)
+    return next_free
+
+
+    # # Dissecting the schedule object
+    #
+    # # Want to deal with everything in UTC, so convert given time - need to test on actual values
+    # given_time_UTC = given_time.astimezone(datetime.timezone.utc) # Need to figure out how to have this asright timezone
+    # schedules = schedule["value"]
+    # details = schedules[0]
+    # items = details["scheduleItems"]
+    # free_during = False
+    # # Create timeline object till the end of the current (or next) working day, and report how long until enext freee time
+    # if is_sorted(items):
+    #     index = 0
+    #     boundary = len(items) - 1
+    #     while (index < boundary):
+    #         print("First event end time", dateutil.parser.isoparse(items[index]['end']['dateTime']))
+    #         print("Second event start time",dateutil.parser.isoparse(items[index + 1]['start']['dateTime']))
+    #         print("Is start after end?",(dateutil.parser.isoparse(items[index]['end']['dateTime']) < dateutil.parser.isoparse(items[index + 1]['start']['dateTime'])))
+    #         if (dateutil.parser.isoparse(items[index]['end']['dateTime']) < dateutil.parser.isoparse(items[index + 1]['start']['dateTime'])):
+    #             next_free = dateutil.parser.isoparse(items[index]['end']['dateTime'])
+    #             print("Is that end in working hours?", (is_in_working_hours(schedule,next_free)))
+    #             if(is_in_working_hours(schedule,next_free)):
+    #                 free_until = dateutil.parser.isoparse(items[index+1]['start']['dateTime'])
+    #                 if (is_in_working_hours(schedule,free_until)):
+    #                     free_for = free_until - next_free
+    #                     return {"next_free":next_free, "for_minutes":free_for.seconds/60}
+    #
+    #         index += 1
+
+
+
 
 def is_sorted(scheduleItems):
     index = 0

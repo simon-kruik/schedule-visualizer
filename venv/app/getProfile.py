@@ -38,7 +38,7 @@ def get_id(email, access_token):
 def get_photo(email, access_token):
     id = get_id(email, access_token)
     if (id):
-        url = "https://graph.microsoft.com/v1.0/users/" + id + "/photo/$value"
+        url = "https://graph.microsoft.com/v1.0/users/" + id + "/photos('120x120')/$value"
         headers = {
             "Authorization": "Bearer " + access_token,
             "Host" : "graph.microsoft.com"
@@ -47,6 +47,8 @@ def get_photo(email, access_token):
         photo = results.content
     else:
         photo = False
+    if "error" in str(photo):
+        return False
     return photo
 
 def get_coworker_emails(access_token):

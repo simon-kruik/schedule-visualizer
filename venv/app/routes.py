@@ -6,6 +6,7 @@ import datetime
 from flask_socketio import SocketIO, emit
 import copy
 from base64 import b64encode # For loading image binary objects
+import avinit # Avatar generation for people without photos
 
 app = Flask(__name__)
 app.secret_key = 'XgHwOW8G73&2wAGN'
@@ -159,13 +160,21 @@ def schedule_choose():
 @app.route('/schedule/visualisation')
 @login_required
 def schedule_visualization():
+    av_settings_dict = {'height':'120','width':'120','font-size':'60'} # Some custom settings for avatar generation in avinit
     if 'schedules' not in session:
         return render_template('/schedule/choose.html')
     else:
-        data = main.getSchedules(session['schedules'], session['access_token'])
+        data = main.getSchedules(session['schedules'], session['access_token'], session['tz_offset'])
         photos = {}
         for user_email in data:
-            photos[user_email] = b64encode(getProfile.get_photo(user_email, session['access_token'])).decode("utf-8")
+            raw_photo = getProfile.get_photo(user_email, session['access_token'])
+            if not raw_photo:
+                print("No photo for ", user_email, " generating one")
+
+                photo = avinit.get_avatar_data_url(user_email.split('@')[0].replace('.',' '), **av_settings_dict)
+            else:
+                photo = "data:;base64," + b64encode(raw_photo).decode("utf-8")
+            photos[user_email] = photo
 
     return render_template('/schedule/visualization.html', schedule_dict=data, photos=photos)
 
@@ -175,18 +184,21 @@ def schedule_visualization():
 def schedule_submit_choice():
     if request.method == "POST":
         schedules = request.form.get('schedules')
+        tz_offset = request.form.get('timezone_offset')
         # print("OG DATA: " + str(request.form.to_dict()))
     elif request.method == "GET":
         schedules = request.args.get('schedules')
-
+        tz_offset = request.args.get('timezone_offset')
     else:
         return render_template('/login/failure.html')
+    session['tz_offset'] = tz_offset
     schedules_list = False
     if schedules is not None:
         schedules_list = main.verify_profiles(schedules, session['access_token'])
         # print("LISTIFIED: " + str(schedules_list))
     if schedules_list is not False:
         session['schedules'] = schedules_list
+
         # print(schedules_list)
         return redirect('/schedule/visualisation')
     return render_template('/schedule/choose.html')

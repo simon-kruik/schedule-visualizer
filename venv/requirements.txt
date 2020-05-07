@@ -2,3 +2,4 @@ adal
 Flask
 Flask-Testing
 flask_socketio
+avinit

@@ -1,5 +1,7 @@
+https://graph.microsoft.com/v1.0/me/calendar/getSchedule
+
 {
 Schedules: ["Pascal.tampubolon@uts.edu.au"],
-StartTime: {"dateTime":"2020-03-24T05:22:24", "timeZone":"Australia/Sydney"},
-EndTime: {"dateTime":"2020-03-29T05:29:28", "timeZone":"Australia/Sydney"}
+StartTime: {"dateTime":"2020-05-95T05:22:24", "timeZone":"Australia/Sydney"},
+EndTime: {"dateTime":"2020-05-10T05:29:28", "timeZone":"Australia/Sydney"}
 }

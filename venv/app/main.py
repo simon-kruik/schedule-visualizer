@@ -89,7 +89,7 @@ def verify_profiles(profiles_string, access_token):
     return emails
 
 
-def getSchedules(emails, access_token):
+def getSchedules(emails, access_token, tz_offset):
     start_date = format_date(get_current_date())
     end_date = format_date(get_current_date() + timedelta(days=5))
     timezone = '''Australia/Sydney'''
@@ -103,7 +103,14 @@ def getSchedules(emails, access_token):
         current_dict['current_status'] = getSchedule.isBusy(schedule , get_current_date())
         current_dict["next_free"] = "Now"
         if (current_dict['current_status'] == BUSY or (treat_tentative_as_busy and current_dict['current_status'] == TENTATIVE)):
-            current_dict["next_free"] = "Later"
+            current_dict["next_free"] = getSchedule.next_free(schedule, get_current_date())
+            offset = datetime.timedelta(minutes=-int(tz_offset))
+            custom_timezone = datetime.timezone(offset)
+            current_dict["next_free"] = current_dict['next_free'].astimezone(custom_timezone)
+            if current_dict["next_free"].strftime("%d") == get_current_date().astimezone(custom_timezone).strftime('%d'): # If they're next free today
+                current_dict["next_free"] = "at " + current_dict['next_free'].strftime('%I:%M %p')
+            else:
+                current_dict["next_free"] = "at " + current_dict['next_free'].strftime('%I:%M %p  %d/%m')
             #current_dict['next_free'] = getSchedule.next_free(schedule, get_current_date())
         users[email] = current_dict
     return users
