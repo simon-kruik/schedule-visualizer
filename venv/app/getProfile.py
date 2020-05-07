@@ -35,6 +35,24 @@ def get_id(email, access_token):
         id = False
     return id
 
+def get_given_name(email, access_token):
+    url = "https://graph.microsoft.com/v1.0/users/" + email + "?$select=GivenName"
+    headers = {
+        "Authorization": "Bearer " + access_token,
+        "Host": "graph.microsoft.com"
+    }
+    results = requests.get(url=url, headers=headers)
+    return json.loads(results.text)['givenName']
+
+def get_display_name(email, access_token):
+    url = "https://graph.microsoft.com/v1.0/users/" + email + "?$select=displayName"
+    headers = {
+        "Authorization": "Bearer " + access_token,
+        "Host": "graph.microsoft.com"
+    }
+    results = requests.get(url=url, headers=headers)
+    return json.loads(results.text)['displayName']
+
 def get_photo(email, access_token):
     id = get_id(email, access_token)
     if (id):

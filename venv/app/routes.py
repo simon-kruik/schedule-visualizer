@@ -167,11 +167,12 @@ def schedule_visualization():
         data = main.getSchedules(session['schedules'], session['access_token'], session['tz_offset'])
         photos = {}
         for user_email in data:
+            data[user_email]['given_name'] = getProfile.get_given_name(user_email, session['access_token'])
             raw_photo = getProfile.get_photo(user_email, session['access_token'])
             if not raw_photo:
-                print("No photo for ", user_email, " generating one")
+                print("No photo for ", user_email, "-  generating one")
 
-                photo = avinit.get_avatar_data_url(user_email.split('@')[0].replace('.',' '), **av_settings_dict)
+                photo = avinit.get_avatar_data_url(getProfile.get_display_name(user_email, session['access_token']), **av_settings_dict)
             else:
                 photo = "data:;base64," + b64encode(raw_photo).decode("utf-8")
             photos[user_email] = photo
