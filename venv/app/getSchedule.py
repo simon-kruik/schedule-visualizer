@@ -62,9 +62,9 @@ def parse_schedule_event_hours(time_string, timezone_string):
     return converted_datetime
 
 def is_in_working_hours(schedule, given_time):
-    print("Given_time originally",given_time)
+    #print("Given_time originally",given_time)
     given_time_UTC = given_time.astimezone(datetime.timezone.utc)
-    print("Given_time in UTC", given_time_UTC)
+    #print("Given_time in UTC", given_time_UTC)
     schedules = schedule["value"]
     details = schedules[0]
     workdays = details["workingHours"]
