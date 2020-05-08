@@ -104,6 +104,8 @@ def getSchedules(emails, access_token, tz_offset):
         current_dict["next_free"] = "Now"
         if (current_dict['current_status'] == BUSY or (treat_tentative_as_busy and current_dict['current_status'] == TENTATIVE)):
             current_dict["next_free"] = getSchedule.next_free(schedule, get_current_date())
+            current_dict["free_for"] = getSchedule.free_for(schedule, current_dict["next_free"])
+            current_dict["free_for"] = str(current_dict["free_for"])[0:-3]
             offset = datetime.timedelta(minutes=-int(tz_offset))
             custom_timezone = datetime.timezone(offset)
             current_dict["next_free"] = current_dict['next_free'].astimezone(custom_timezone)
