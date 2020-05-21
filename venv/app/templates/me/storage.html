@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="jumbo">
+        <br>
+        <img src="data:;base64,{{image}}">
+        <br>
+        <br>
+        <div>
+        <b>Folders:</b>
+        <ul>
+        {% for folder in folder_list %}
+
+                <li><a href="/me/storage?folder={{ folder['id'] }}"> {{ folder['name'] }} </a></li>
+
+        {% endfor %}
+        </ul>
+
+        </div>
+    </div>
+{% endblock %}

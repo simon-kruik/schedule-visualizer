@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, session, redirect, url_for, send_file
 from functools import wraps
-import auth, main, getProfile, getMail
+import auth, main, getProfile, getMail, getStorage
 import uuid
 import datetime
 from flask_socketio import SocketIO, emit
@@ -145,8 +145,25 @@ def me():
     photo_b64 = b64encode(photo).decode("utf-8")
     # print(session['expires_at'])
     # profile_dict = {"Key":"Value","Key2":"Value2"}
-    return render_template('/me.html', profile_dict=person_dict, image=photo_b64)
+    return render_template('/me/me.html', profile_dict=person_dict, image=photo_b64)
 
+@app.route('/me/storage', methods=['GET','POST'])
+@login_required
+def me_storage():
+    # NEED TO SET PERMS FOR SHAREPOINT ACCESS
+    if request.method == "POST":
+        group_id = request.form.get('group_id')
+        folders = getStorage.get_root_folders(session['access_token'],group_id)  # Needs to get folders from site listed in GET request.
+        session['group_id'] = group_id
+    elif request.method == "GET":
+        if request.args.get('folder') is not None:
+            folders = getStorage.get_child_folders(session['access_token'], session['group_id'], request.args.get('folder'))
+        else:
+            return redirect('/me')
+    person_dict = getProfile.get_profile(session['access_token'])
+    photo = getProfile.get_photo(person_dict['mail'], session['access_token'])
+    photo_b64 = b64encode(photo).decode("utf-8")
+    return render_template('/me/storage.html', folder_list=folders, image=photo_b64)
 
 @app.route('/schedule/choose')
 @login_required

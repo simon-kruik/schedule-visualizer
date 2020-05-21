@@ -8,6 +8,12 @@
                 <li><b>Value:</b> {{ value }}</li>
             </ul>
         {% endfor %}
+        <br>
+        <br>
+        <form action="/me/storage" method="post">
+            <input type="text" placeholder="Set Sharepoint Group ID" name="group_id">
+            <input type="submit" value="Submit">
+        </form>
 
     </div>
 {% endblock %}
