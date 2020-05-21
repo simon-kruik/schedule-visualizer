@@ -151,22 +151,23 @@ def me():
 @login_required
 def me_storage():
     # NEED TO SET PERMS FOR SHAREPOINT ACCESS
-    if request.method == "POST":
+    if request.method == "POST": # First submission of group id
         group_id = request.form.get('group_id')
         folders = getStorage.get_root_folders(session['access_token'],group_id)  # Needs to get folders from site listed in GET request.
         session['group_id'] = group_id
-        parent_tuple = (None, "Base Directory")
+        path_tuple_list = [(None, "Base Directory")]
+
     elif request.method == "GET":
-        if request.args.get('folder') is not None and request.args.get('folder') is not "None":
+        if request.args.get('folder') is not None and request.args.get('folder') != "None":
             folders = getStorage.get_child_folders(session['access_token'], session['group_id'], request.args.get('folder'))
-            parent_tuple = getStorage.get_parent(session['access_token'], session['group_id'], request.args.get('folder'))
+            path_tuple_list = getStorage.get_path_tuples(session['access_token'], session['group_id'], request.args.get('folder'))
             current_folder = getStorage.get_item_name(session['access_token'], session['group_id'], request.args.get('folder'))
         else:
             return redirect('/me')
     person_dict = getProfile.get_profile(session['access_token'])
     photo = getProfile.get_photo(person_dict['mail'], session['access_token'])
     photo_b64 = b64encode(photo).decode("utf-8")
-    return render_template('/me/storage.html', folder_list=folders, image=photo_b64, parent_tuple=parent_tuple, folder_name=current_folder)
+    return render_template('/me/storage.html', folder_list=folders, image=photo_b64, path_tuple_list=path_tuple_list)
 
 @app.route('/schedule/choose')
 @login_required

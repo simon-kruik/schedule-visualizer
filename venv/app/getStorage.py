@@ -52,9 +52,20 @@ def get_parent(access_token, group_id, item_id):
     #print(results.text)
     result_dict = json.loads(results.text)
     try:
-        return (result_dict['parentReference']['id'],result_dict['parentReference']['path'])
+        return (result_dict['parentReference']['id'],result_dict['parentReference']['path'].split('/')[-1])
     except:
-        return (None, "Root")
+        return (None, get_group_name(access_token, group_id))
+
+def get_path_tuples(access_token, group_id, item_id):
+    tuple_list = [(item_id,get_item_name(access_token,group_id,item_id))]
+    parent_tuple = get_parent(access_token, group_id, item_id)
+    tuple_list.append(parent_tuple)
+    while parent_tuple[0] is not None:
+        parent_tuple = get_parent(access_token, group_id, parent_tuple[0])
+        tuple_list.append(parent_tuple)
+    tuple_list.reverse()
+    #print(tuple_list)
+    return tuple_list
 
 def get_item_name(access_token, group_id, item_id):
     url = "https://graph.microsoft.com/v1.0/groups/" + group_id + "/drive/items/" + item_id
@@ -65,3 +76,14 @@ def get_item_name(access_token, group_id, item_id):
     results = requests.get(url=url, headers=headers)
     result_dict = json.loads(results.text)
     return result_dict['name']
+
+def get_group_name(access_token, group_id):
+    url = "https://graph.microsoft.com/v1.0/groups/" + group_id + '/drive/'
+    headers = {
+        "Authorization": "Bearer " + access_token,
+        "Host": "graph.microsoft.com"
+    }
+    results = requests.get(url=url, headers=headers)
+    result_dict = json.loads(results.text)
+    print(result_dict)
+    return result_dict['owner']['group']['displayName']
