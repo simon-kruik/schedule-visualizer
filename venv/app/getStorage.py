@@ -41,3 +41,27 @@ def get_child_folders(access_token, group_id, folder_id):
         if 'folder' in item:
             folders.append(item)
     return folders
+
+def get_parent(access_token, group_id, item_id):
+    url = "https://graph.microsoft.com/v1.0/groups/" + group_id + "/drive/items/" + item_id
+    headers = {
+        "Authorization": "Bearer " + access_token,
+        "Host": "graph.microsoft.com"
+    }
+    results = requests.get(url=url, headers=headers)
+    #print(results.text)
+    result_dict = json.loads(results.text)
+    try:
+        return (result_dict['parentReference']['id'],result_dict['parentReference']['path'])
+    except:
+        return (None, "Root")
+
+def get_item_name(access_token, group_id, item_id):
+    url = "https://graph.microsoft.com/v1.0/groups/" + group_id + "/drive/items/" + item_id
+    headers = {
+        "Authorization": "Bearer " + access_token,
+        "Host": "graph.microsoft.com"
+    }
+    results = requests.get(url=url, headers=headers)
+    result_dict = json.loads(results.text)
+    return result_dict['name']
