@@ -145,13 +145,15 @@ def me():
     photo_b64 = b64encode(photo).decode("utf-8")
     # print(session['expires_at'])
     # profile_dict = {"Key":"Value","Key2":"Value2"}
-    return render_template('/me/me.html', profile_dict=person_dict, image=photo_b64)
+    teams = getProfile.get_joined_teams(session['access_token'])
+    return render_template('/me/me.html', profile_dict=person_dict, image=photo_b64, groups=teams)
 
 @app.route('/me/storage', methods=['GET','POST'])
 @login_required
 def me_storage():
     # NEED TO SET PERMS FOR SHAREPOINT ACCESS
     if request.method == "POST": # First submission of group id
+        #print(request.form.get('group_id'))
         group_id = request.form.get('group_id')
         folders = getStorage.get_root_folders(session['access_token'],group_id)  # Needs to get folders from site listed in GET request.
         session['group_id'] = group_id

@@ -87,6 +87,16 @@ def get_coworker_emails(access_token):
         coworker_emails.append(coworker['mail'])
     return coworker_emails
 
+def get_joined_teams(access_token):
+    url = "https://graph.microsoft.com/v1.0/me/joinedTeams"
+    headers = {
+        "Authorization": "Bearer " + access_token,
+        "Host" : "graph.microsoft.com"
+    }
+    results = requests.get(url=url, headers=headers)
+    result_dict = json.loads(results.text)
+    return result_dict['value']
+
 def test_get_photo():
     with open('static/img/test.jfif') as f:
         print(f)

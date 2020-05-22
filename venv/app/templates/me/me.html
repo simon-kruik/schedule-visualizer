@@ -11,8 +11,14 @@
         <br>
         <br>
         <form action="/me/storage" method="post">
-            <input type="text" placeholder="Set Sharepoint Group ID" name="group_id">
+            <label for="group_storage">Change default storage location group:</label>
+            <select id="group_storage" name="group_id">
+                {% for group_dict in groups %}
+                    <option value="{{ group_dict['id'] }}">{{ group_dict['displayName'] }}</option>
+                {% endfor %}
+            </select>
             <input type="submit" value="Submit">
+
         </form>
 
     </div>
