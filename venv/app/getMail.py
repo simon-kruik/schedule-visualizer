@@ -160,12 +160,14 @@ def lookup_level_one_staff(access_token, email_address):
     }
     results = requests.get(url=url, headers=headers)
     results = json.loads(results.text)
-    print(results)
+    #print(results)
     if 'error' in results:
         return 'Other'
     else:
-        return results['onPremisesExtensionAttributes']['extensionAttribute1']
-
+        try:
+            return results['onPremisesExtensionAttributes']['extensionAttribute1']
+        except:
+            return "None"
 def lookup_level_two_staff(access_token, email_address):
     url = "https://graph.microsoft.com/v1.0/users/" + email_address + "?$select=displayName,jobTitle,onPremisesExtensionAttributes"
     headers = {

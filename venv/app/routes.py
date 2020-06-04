@@ -171,6 +171,29 @@ def me_storage():
     photo_b64 = b64encode(photo).decode("utf-8")
     return render_template('/me/storage.html', folder_list=folders, image=photo_b64, path_tuple_list=path_tuple_list)
 
+@app.route('/me/enter_faculty', methods=['GET'])
+@login_required
+def enter_faculty():
+    return render_template('/me/enter_faculty.html')
+
+@app.route('/me/submit_faculty_persons', methods=['POST'])
+@login_required
+def me_submit_faculty_persons():
+    persons_list = request.form.get('persons_list')
+    person_faculty_list = []
+    persons_list = persons_list.split("\n")
+    print(str(persons_list))
+    for line in persons_list:
+        faculty = getMail.lookup_level_one_staff(session['access_token'],line.strip())
+        person_faculty_list.append(line.strip() + "," + str(faculty))
+
+
+    return_string = ''
+    for item in person_faculty_list:
+        return_string = return_string  + str(item) + "\n"
+    return return_string
+
+
 @app.route('/schedule/choose')
 @login_required
 def schedule_choose():

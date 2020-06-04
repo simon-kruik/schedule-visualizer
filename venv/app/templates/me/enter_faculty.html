@@ -1,0 +1,8 @@
+{% extends "layout.html" %}
+{% block content %}
+    <form action="/me/submit_faculty_persons" method="POST">
+        <textarea name="persons_list" id="persons_list">
+        </textarea>
+        <input type="submit" label="Submit">
+    </form>
+{% endblock %}

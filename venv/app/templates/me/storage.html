@@ -18,8 +18,12 @@
         <ul>
         {% for folder in folder_list %}
 
-                <li><a href="/me/storage?folder={{ folder['id'] }}"> {{ folder['name'] }} </a></li>
-
+                <li>
+                    <form action="/me/change_storage" method="post">
+                    <a href="/me/storage?folder={{ folder['id'] }}"> {{ folder['name'] }} </a> -
+                    <button type="submit" style="align:right;">Set Storage Location</button>
+                </form>
+                </li>
         {% endfor %}
         </ul>
 
